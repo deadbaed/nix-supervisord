@@ -1,0 +1,28 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  # TODO: check formatting
+
+  test-example:
+    name: Test example
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - name: Build example
+        run: nix-build ./example
+      - name: Run example
+        run: |
+          nix-shell ./example --run "
+          set -e
+          supervisord
+          sleep 5
+          supervisorctl status
+          curl -s http://supervisord.localhost:8080 | grep -q "Mailpit"
+          supervisord-kill
+          "
