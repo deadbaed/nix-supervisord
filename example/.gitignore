@@ -1,0 +1,6 @@
+# direnv
+.direnv/
+.envrc
+
+# artefacts of the example
+supervisord-files/
