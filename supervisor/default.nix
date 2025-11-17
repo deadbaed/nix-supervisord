@@ -28,10 +28,10 @@ let
     ${package}/bin/supervisorctl -c ${configFile} $@
   '';
 
-  supervisord-stop = pkgs.writeShellScriptBin "supervisord-stop" ''
+  supervisord-kill = pkgs.writeShellScriptBin "supervisord-kill" ''
     kill -s TERM $(cat ${config.supervisord_process})
   '';
 in
 {
-  inherit supervisord-wrapper supervisorctl-wrapper supervisord-stop;
+  inherit supervisord-wrapper supervisorctl-wrapper supervisord-kill;
 }

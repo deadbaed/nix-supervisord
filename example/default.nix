@@ -45,8 +45,8 @@ rec {
       # CLI to control supervisord and running programs, available as "supervisorctl" in PATH
       supervisor.supervisorctl-wrapper
 
-      # Script to kill supervisord, available as "supervisord-stop" in PATH
-      supervisor.supervisord-stop
+      # Script to kill supervisord, available as "supervisord-kill" in PATH
+      supervisor.supervisord-kill
 
       # Tool to view logs, launch with `lnav <log-folder>`
       lnav
