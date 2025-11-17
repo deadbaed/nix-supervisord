@@ -17,8 +17,8 @@ let
       files = ${filePaths}
     '';
 
-  supervisord_socket = "${paths.run}/supervisord.sock";
-  supervisord_process = "${paths.run}/supervisord.pid";
+  supervisord_socket = "${paths.path.root}/run/supervisord.sock";
+  supervisord_process = "${paths.path.root}/run/supervisord.pid";
 
   # Main supervisord config file https://supervisord.org/configuration.html
   configFile = pkgs.writeTextFile {
@@ -26,9 +26,9 @@ let
     text = ''
       [supervisord]
       pidfile = ${supervisord_process}
-      directory = ${paths.root}
-      logfile = ${paths.log}/supervisord.log
-      childlogdir = ${paths.log}
+      directory = ${paths.path.root}
+      logfile = ${paths.path.root}/log/supervisord.log
+      childlogdir = ${paths.path.root}/log
 
       [unix_http_server]
       file = ${supervisord_socket}

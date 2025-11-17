@@ -16,12 +16,11 @@ let
   };
 
   mailpit = "mailpit";
-  mailpitSocket = "${paths.run}/${mailpit}.sock";
   caddyConfig = pkgs.writeTextFile {
     name = "Caddyfile-${project_name}";
     text = ''
       supervisord.localhost:80 {
-        reverse_proxy unix/${mailpitSocket}
+        reverse_proxy unix/{env.SUPERVISORD_RUN}/${mailpit}.sock
       }
     '';
   };
@@ -32,7 +31,7 @@ in
   # Mailpit is a simple tool to send test emails
   (mkSupervisordProgram {
     name = mailpit;
-    command = "${pkgs.mailpit}/bin/mailpit --db-file ${paths.data}/${mailpit}/db.sqlite --listen unix:${mailpitSocket}:666 --smtp 127.0.0.1:1025 --disable-version-check --label=${project_name}";
+    command = "${pkgs.mailpit}/bin/mailpit --db-file ${paths.path.data}/${mailpit}/db.sqlite --listen unix:${paths.path.run}/${mailpit}.sock:666 --smtp 127.0.0.1:1025 --disable-version-check --label=${project_name}";
   })
 
   # Caddy is a reverse proxy, configured to view Mailpit's web interface
@@ -41,10 +40,10 @@ in
       name = "caddy";
       config = {
         inherit name;
-        command = "${pkgs.caddy}/bin/caddy run -c ${caddyConfig} --adapter caddyfile --pidfile ${paths.run}/${name}.pid";
+        command = "${pkgs.caddy}/bin/caddy run --pidfile ${paths.path.run}/${name}.pid --adapter caddyfile -c ${caddyConfig}";
         environment = {
-          XDG_DATA_HOME = "${paths.data}/${name}/data";
-          XDG_CONFIG_HOME = "${paths.data}/${name}/config";
+          XDG_DATA_HOME = "${paths.path.data}/${name}/data";
+          XDG_CONFIG_HOME = "${paths.path.data}/${name}/config";
         };
       };
     in

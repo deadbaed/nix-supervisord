@@ -18,9 +18,10 @@ let
   };
   configFile = config.configFile;
   package = pkgs.python313Packages.supervisor;
+  root = paths.path.root;
 
   supervisord-wrapper = pkgs.writeShellScriptBin "supervisord" ''
-    mkdir -p ${paths.run} ${paths.data} ${paths.log}
+    mkdir -p ${root}/${paths.path.run} ${root}/${paths.path.data} ${root}/${paths.path.log}
     ${package}/bin/supervisord -c ${configFile}
   '';
 
