@@ -22,6 +22,10 @@ let
 
   supervisord-wrapper = pkgs.writeShellScriptBin "supervisord" ''
     mkdir -p ${root}/${paths.path.run} ${root}/${paths.path.data} ${root}/${paths.path.log}
+    export ${paths.env.root}=$(realpath ${root})
+    export ${paths.env.run}=$(realpath ${root})/${paths.path.run}
+    export ${paths.env.data}=$(realpath ${root})/${paths.path.data}
+    export ${paths.env.log}=$(realpath ${root})/${paths.path.log}
     ${package}/bin/supervisord -c ${configFile}
   '';
 
