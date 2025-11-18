@@ -19,8 +19,8 @@ let
   caddyConfig = pkgs.writeTextFile {
     name = "Caddyfile-${project_name}";
     text = ''
-      supervisord.localhost:80 {
-        reverse_proxy unix/{env.SUPERVISORD_RUN}/${mailpit}.sock
+      http://supervisord.localhost:8080 {
+        reverse_proxy unix/{env.SUPERVISORD_RUN}/${mailpit}/${mailpit}.sock
       }
     '';
   };
