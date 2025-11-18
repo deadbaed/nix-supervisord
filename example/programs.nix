@@ -31,7 +31,7 @@ in
   # Mailpit is a simple tool to send test emails
   (mkSupervisordProgram {
     name = mailpit;
-    command = "${pkgs.mailpit}/bin/mailpit --db-file ${paths.path.data}/${mailpit}/db.sqlite --listen unix:${paths.path.run}/${mailpit}.sock:666 --smtp 127.0.0.1:1025 --disable-version-check --label=${project_name}";
+    command = "${pkgs.mailpit}/bin/mailpit --db-file ${paths.path.data}/${mailpit}/db.sqlite --listen unix:${paths.path.run}/${mailpit}/${mailpit}.sock:666 --smtp 127.0.0.1:1025 --disable-version-check --label=${project_name}";
   })
 
   # Caddy is a reverse proxy, configured to view Mailpit's web interface
@@ -40,7 +40,7 @@ in
       name = "caddy";
       config = {
         inherit name;
-        command = "${pkgs.caddy}/bin/caddy run --pidfile ${paths.path.run}/${name}.pid --adapter caddyfile -c ${caddyConfig}";
+        command = "${pkgs.caddy}/bin/caddy run --pidfile ${paths.path.run}/${name}/${name}.pid --adapter caddyfile -c ${caddyConfig}";
         environment = {
           XDG_DATA_HOME = "${paths.path.data}/${name}/data";
           XDG_CONFIG_HOME = "${paths.path.data}/${name}/config";

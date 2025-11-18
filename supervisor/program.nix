@@ -28,10 +28,9 @@ let
     {
       name,
       command,
-      dataDir,
     }:
     pkgs.writeShellScriptBin (commandName project_name name) ''
-      mkdir -p ${dataDir}
+      mkdir -p ${paths.path.data}/${name} ${paths.path.run}/${name}
       exec ${command}
     '';
 
@@ -48,7 +47,6 @@ let
     let
       wrappedCommand = wrapCommand {
         inherit name command;
-        dataDir = "${paths.path.data}/${name}";
       };
       envLine = lib.optionalString (environment != { }) "environment = ${formatEnvironment environment}";
       program = commandName project_name name;
