@@ -43,20 +43,14 @@ let
     {
       name,
       command,
-      environment ? { },
+      environment,
     }:
     let
-      supervisordEnvironment = environment // {
-        SUPERVISORD_ROOT = "${paths.path.root}";
-        SUPERVISORD_RUN = "${paths.path.root}/${paths.path.run}";
-        SUPERVISORD_DATA = "${paths.path.root}/${paths.path.data}";
-        SUPERVISORD_LOG = "${paths.path.root}/${paths.path.log}";
-      };
       wrappedCommand = wrapCommand {
         inherit name command;
         dataDir = "${paths.path.data}/${name}";
       };
-      envLine = "environment = ${formatEnvironment supervisordEnvironment}";
+      envLine = lib.optionalString (environment != { }) "environment = ${formatEnvironment environment}";
       program = commandName project_name name;
     in
     pkgs.writeTextFile {
