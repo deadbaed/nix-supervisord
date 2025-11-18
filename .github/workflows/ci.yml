@@ -3,7 +3,13 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  # TODO: check formatting
+  check-formatting:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - run: nix-shell --run "treefmt --ci"
 
   test-example:
     name: Test example
