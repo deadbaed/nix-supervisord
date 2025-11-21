@@ -1,6 +1,8 @@
-{ pkgs }:
+{
+  pkgs,
+  package ? pkgs.python313Packages.supervisor,
+}:
 let
-
   mkPaths =
     {
       project ? ".",
@@ -27,7 +29,6 @@ let
         inherit pkgs project_name paths;
         programs = programConfigs;
       };
-      package = pkgs.python313Packages.supervisor;
 
       supervisord-wrapper = pkgs.writeShellScriptBin "supervisord" ''
         # Make sure required folders exist
