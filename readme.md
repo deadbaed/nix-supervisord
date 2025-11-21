@@ -38,7 +38,6 @@ Create a `shell.nix` file to define programs, generate your supervisord project 
 {
   sources ? import ./npins,
   pkgs ? import sources.nixpkgs { },
-  lib ? pkgs.lib,
   supervisord ? import sources.nix-supervisord { inherit pkgs; },
 }:
 
