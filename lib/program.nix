@@ -1,5 +1,4 @@
 {
-  lib,
   pkgs,
   project_name,
   paths,
@@ -35,7 +34,8 @@ let
     '';
 
   # Convert environment attrset to supervisord format: var1="value1",var2="value2"
-  formatEnvironment = env: lib.concatStringsSep "," (lib.mapAttrsToList (k: v: ''${k}="${v}"'') env);
+  formatEnvironment =
+    env: pkgs.lib.concatStringsSep "," (pkgs.lib.mapAttrsToList (k: v: ''${k}="${v}"'') env);
 
   # Generate a single program configuration file
   mkProgramConfig =
@@ -48,7 +48,9 @@ let
       wrappedCommand = wrapCommand {
         inherit name command;
       };
-      envLine = lib.optionalString (environment != { }) "environment = ${formatEnvironment environment}";
+      envLine = pkgs.lib.optionalString (
+        environment != { }
+      ) "environment = ${formatEnvironment environment}";
       program = commandName project_name name;
     in
     pkgs.writeTextFile {

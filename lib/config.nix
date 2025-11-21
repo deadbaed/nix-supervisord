@@ -1,5 +1,4 @@
 {
-  lib,
   pkgs,
   project_name,
   paths,
@@ -10,9 +9,9 @@ let
   # All program config files
   includeSection =
     let
-      filePaths = lib.concatStringsSep " " programs;
+      filePaths = pkgs.lib.concatStringsSep " " programs;
     in
-    lib.optionalString (programs != [ ]) ''
+    pkgs.lib.optionalString (programs != [ ]) ''
       [include]
       files = ${filePaths}
     '';

@@ -1,23 +1,22 @@
 {
   sources ? import ../npins,
   pkgs ? import sources.nixpkgs { },
+  lib ? pkgs.lib,
+  supervisor ? import ../lib { inherit pkgs; },
 }:
 
 let
-  # nixpkgs
-  lib = pkgs.lib;
-
   # Define your project name
   project_name = "nix-supervisord-example";
 
   # The default folder where everything will be stored is ".supervisor"
   # For this example "supervisord-files" is used
-  paths = import ../supervisor/paths.nix { folder = "supervisord-files"; };
+  folder = "supervisord-files";
+  paths = supervisor.mkPaths { inherit folder; };
 
   # Import programs to be supervised
   programs = import ./programs.nix {
     inherit
-      lib
       pkgs
       project_name
       paths
@@ -25,14 +24,8 @@ let
   };
 
   # Generate all the config files
-  supervisor = import ../supervisor {
-    inherit
-      lib
-      pkgs
-      project_name
-      paths
-      programs
-      ;
+  supervisordProject = supervisor.mkSupervisor {
+    inherit project_name paths programs;
   };
 in
 rec {
@@ -40,13 +33,13 @@ rec {
     buildInputs = with pkgs; [
 
       # Launch programs and supervisord, available as "supervisord" in PATH
-      supervisor.supervisord-wrapper
+      supervisordProject.supervisord-wrapper
 
       # CLI to control supervisord and running programs, available as "supervisorctl" in PATH
-      supervisor.supervisorctl-wrapper
+      supervisordProject.supervisorctl-wrapper
 
       # Script to kill supervisord, available as "supervisord-kill" in PATH
-      supervisor.supervisord-kill
+      supervisordProject.supervisord-kill
 
       # Tool to view logs, launch with `lnav <log-folder>`
       lnav
