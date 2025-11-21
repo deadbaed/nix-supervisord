@@ -36,3 +36,62 @@ jobs:
           curl -s http://supervisord.localhost:8080 | grep -q "Mailpit"
           supervisord-kill
           "
+
+  create-npins-example:
+    name: Create example with npins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Create project
+        run: |
+          mkdir npins-example && cd npins-example
+          nix-shell -p npins --run "npins init"
+          nix-shell -p npins --run "npins add github deadbaed nix-supervisord -b ${{ github.ref }} --at ${{ github.sha }}"
+          cat << 'EOF' >> shell.nix
+          {
+            sources ? import ./npins,
+            pkgs ? import sources.nixpkgs { },
+            lib ? pkgs.lib,
+            supervisord ? import sources.nix-supervisord { inherit pkgs; },
+          }:
+          let
+            project_name = "my_project";
+            paths = supervisord.mkPaths { };
+            programs = [
+              # https://mailpit.axllent.org
+              (
+                let
+                  name = "mailpit";
+                  config = {
+                    inherit name;
+                    command = "${pkgs.mailpit}/bin/mailpit --db-file ${paths.path.data}/${name}/db.sqlite --disable-version-check";
+                    environment = {
+                      MP_LABEL = "${project_name}";
+                    };
+                  };
+                in
+                config
+              )
+            ];
+            supervisordProject = supervisord.mkSupervisor { inherit project_name paths programs; };
+          in
+          pkgs.mkShellNoCC {
+            packages = [
+              pkgs.npins
+              supervisordProject.supervisord-wrapper
+              supervisordProject.supervisorctl-wrapper
+              supervisordProject.supervisord-kill
+            ];
+          }
+          EOF
+      - name: Run example
+        run: |
+          nix-shell ./npins-example --run "
+          set -ex
+          supervisord
+          sleep 5
+          supervisorctl status
+          supervisord-kill
+          "
