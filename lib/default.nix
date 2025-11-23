@@ -32,13 +32,14 @@ let
 
       supervisord-wrapper = pkgs.writeShellScriptBin "supervisord" ''
         # Make sure required folders exist
-        mkdir -p ${paths.path.root}/${paths.path.run} ${paths.path.root}/${paths.path.data} ${paths.path.root}/${paths.path.log}
+        mkdir -p ${paths.path.run} ${paths.path.data} ${paths.path.log}
 
         # Expose env variables for programs
+        export ${paths.env.project}=$(realpath ${paths.path.project})
         export ${paths.env.root}=$(realpath ${paths.path.root})
-        export ${paths.env.run}=$(realpath ${paths.path.root})/${paths.path.run}
-        export ${paths.env.data}=$(realpath ${paths.path.root})/${paths.path.data}
-        export ${paths.env.log}=$(realpath ${paths.path.root})/${paths.path.log}
+        export ${paths.env.run}=$(realpath ${paths.path.run})
+        export ${paths.env.data}=$(realpath ${paths.path.data})
+        export ${paths.env.log}=$(realpath ${paths.path.log})
 
         # Start supervisord
         ${package}/bin/supervisord -c ${config.configFile}
