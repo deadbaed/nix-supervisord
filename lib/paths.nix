@@ -2,14 +2,18 @@
   project ? ".",
   folder ? ".supervisor",
 }:
+let
+  root = "${project}/${folder}";
+in
 {
   path = {
-    root = "${project}/${folder}";
-    run = "run";
-    data = "data";
-    log = "log";
+    inherit project root;
+    run = "${root}/run";
+    data = "${root}/data";
+    log = "${root}/log";
   };
   env = {
+    project = "SUPERVISORD_PROJECT";
     root = "SUPERVISORD_ROOT";
     run = "SUPERVISORD_RUN";
     data = "SUPERVISORD_DATA";
