@@ -1,7 +1,6 @@
 {
   sources ? import ../npins,
   pkgs ? import sources.nixpkgs { },
-  lib ? pkgs.lib,
   supervisor ? import ../lib { inherit pkgs; },
 }:
 

@@ -5,11 +5,13 @@ Declare your [supervisord](https://supervisord.org) config and programs with nix
 ## Features
 
 - Leverage nixpkgs for the wide selection of fresh packages
-- Manage services with a CLI (start/stop/restart)
-- Collect unmodified logs in a single place to process them with [lnav](https://lnav.org)
+- Manage services with a CLI (start/stop/restart) with `supervisorctl`
+- Collect unmodified logs in a single place, ready to be processed them with a tool like [lnav](https://lnav.org) (my favorite one)
 - Cross platform (Darwin, Linux)
 
 ## Get started
+
+A complete example can be found it the folder [example](./example/).
 
 ### flakes
 
@@ -78,7 +80,7 @@ Run `nix-shell .` to enter inside your newly created supervisord environement. [
 You can:
 - Launch the supervised processes with `supervisord`
 - Manage everything  with `supervisorctl`
-- Kill supervisord with `supervisord-kill`.
+- Kill supervisord with `supervisord-kill`
 
 Files will be stored in `.supervisor`:
 - Logs will be in `.supervisor/logs`
@@ -92,10 +94,6 @@ A project I am working on needs multiple services to run during development. I d
 After discovering [supervisord](https://supervisord.org) and writing my first config, I got a prototype working in a couple of days to use nix to generate configuration files.
 I wanted to extract the config generation logic out of my project and get more nix experience, so I decided to learn how to write a nix library!
 
-## Secret management
-
-to prevent secrets from ending up in your nix store, you can use something like [secretspec](https://secretspec.dev) (I have not tried it yet, but seems promising!)
-
 ## Development
 
 Use [direnv](https://direnv.net) to be inside the nix shell automatically:
@@ -104,3 +102,4 @@ cp .envrc.sample .envrc
 direnv allow
 ```
 
+The source files can be formatted with `treefmt`, it will be checked in CI.

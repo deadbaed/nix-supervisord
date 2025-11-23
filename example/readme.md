@@ -18,6 +18,6 @@ to be inside the nix shell when you are in the directory.
 You can:
 - Launch the supervised processes with `supervisord`
 - Manage everything  with `supervisorctl`
-- Kill supervisord with `supervisord-kill`.
+- Kill supervisord with `supervisord-kill`
 
 When supervisord is running, you should be able to open your web browser to [http://supervisord.localhost:8080](http://supervisord.localhost:8080) and see Mailpit running.
