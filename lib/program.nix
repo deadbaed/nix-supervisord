@@ -37,6 +37,7 @@ let
       pre_commands,
     }:
     pkgs.writeShellScriptBin (commandName project_name name) ''
+      set -e
       mkdir -p ${paths.path.data}/${name} ${paths.path.run}/${name}
       ${pkgs.lib.concatStringsSep "\n" pre_commands}
       exec ${command}
