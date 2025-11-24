@@ -13,23 +13,32 @@ let
     {
       name,
       command,
+      pre_commands,
       environment,
     }:
     assert builtins.typeOf name == "string";
     assert builtins.typeOf command == "string";
+    assert builtins.typeOf pre_commands == "list";
     assert builtins.typeOf environment == "set";
     {
-      inherit name command environment;
+      inherit
+        name
+        command
+        pre_commands
+        environment
+        ;
     };
 
-  # Create data folder before launching program
+  # Create data folder, run commands before launching final program
   wrapCommand =
     {
       name,
       command,
+      pre_commands,
     }:
     pkgs.writeShellScriptBin (commandName project_name name) ''
       mkdir -p ${paths.path.data}/${name} ${paths.path.run}/${name}
+      ${pkgs.lib.concatStringsSep "\n" pre_commands}
       exec ${command}
     '';
 
@@ -42,11 +51,12 @@ let
     {
       name,
       command,
+      pre_commands,
       environment,
     }:
     let
       wrappedCommand = wrapCommand {
-        inherit name command;
+        inherit name command pre_commands;
       };
       envLine = pkgs.lib.optionalString (
         environment != { }
@@ -70,12 +80,14 @@ let
       validated = programType {
         name = config.name;
         command = config.command;
+        pre_commands = config.pre_commands or [ ];
         environment = config.environment or { };
       };
     in
     mkProgramConfig {
       name = validated.name;
       command = validated.command;
+      pre_commands = validated.pre_commands;
       environment = validated.environment;
     };
 in
