@@ -30,16 +30,21 @@ let
         programs = programConfigs;
       };
 
+      # Expose env variables for programs
+      shellHook = ''
+        export ${paths.env.project}=$(realpath ${paths.path.project})
+        export ${paths.env.root}=$(realpath ${paths.path.root})
+        export ${paths.env.run}=$(realpath ${paths.path.root})/${paths.name.run}
+        export ${paths.env.data}=$(realpath ${paths.path.root})/${paths.name.data}
+        export ${paths.env.log}=$(realpath ${paths.path.root})/${paths.name.log}
+      '';
+
       supervisord-wrapper = pkgs.writeShellScriptBin "supervisord" ''
         # Make sure required folders exist
         mkdir -p ${paths.path.run} ${paths.path.data} ${paths.path.log}
 
-        # Expose env variables for programs
-        export ${paths.env.project}=$(realpath ${paths.path.project})
-        export ${paths.env.root}=$(realpath ${paths.path.root})
-        export ${paths.env.run}=$(realpath ${paths.path.run})
-        export ${paths.env.data}=$(realpath ${paths.path.data})
-        export ${paths.env.log}=$(realpath ${paths.path.log})
+        # env variables
+        ${shellHook}
 
         # Start supervisord
         ${package}/bin/supervisord -c ${config.configFile}
@@ -52,7 +57,12 @@ let
       '';
     in
     {
-      inherit supervisord-wrapper supervisorctl-wrapper supervisord-kill;
+      inherit
+        supervisord-wrapper
+        supervisorctl-wrapper
+        supervisord-kill
+        shellHook
+        ;
       paths = paths;
       configFile = config.configFile;
     };

@@ -43,5 +43,8 @@ rec {
       # Tool to view logs, launch with `lnav <log-folder>`
       lnav
     ];
+
+    # Get environment variables of the supervisordProject
+    shellHook = supervisordProject.shellHook;
   };
 }
