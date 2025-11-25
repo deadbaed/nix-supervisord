@@ -57,6 +57,10 @@ let
           environment = {
             MP_LABEL = "${project_name}";
           };
+          pre_commands = [
+            "echo \"about to launch mailpit\""
+            "echo \"please standby...\""
+          ];
         };
       in
       config

@@ -21,6 +21,10 @@ in
   {
     name = mailpit;
     command = "${pkgs.mailpit}/bin/mailpit --db-file ${paths.path.data}/${mailpit}/db.sqlite --listen unix:${paths.path.run}/${mailpit}/${mailpit}.sock:666 --smtp 127.0.0.1:1025 --disable-version-check --label=${project_name}";
+    pre_commands = [
+      "echo \"about to launch mailpit\""
+      "echo \"please standby...\""
+    ];
   }
 
   # Caddy is a reverse proxy, configured to view Mailpit's web interface
