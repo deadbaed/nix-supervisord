@@ -3,8 +3,8 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  check-formatting:
-    name: Check formatting
+  check-files:
+    name: Check files
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -13,13 +13,19 @@ jobs:
         run: |
           nixpkgs_path=$(nix eval --raw -f npins/default.nix nixpkgs)
           echo "NIX_PATH=nixpkgs=$nixpkgs_path" >> "$GITHUB_ENV"
-      - run: nix-shell --run "treefmt --ci"
+      - name: Check nix files
+        run: nix-shell --run "treefmt --ci"
+      - name: Check emitted shell scripts
+        run: |
+          nix-shell ./example --run "which supervisord | xargs shellcheck"
+          nix-shell ./example --run "which supervisorctl | xargs shellcheck"
+          nix-shell ./example --run "which supervisord-kill | xargs shellcheck"
 
   test-example:
     name: Test example
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5

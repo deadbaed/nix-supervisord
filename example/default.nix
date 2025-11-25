@@ -29,7 +29,7 @@ let
 in
 rec {
   shell = pkgs.mkShellNoCC {
-    buildInputs = with pkgs; [
+    packages = with pkgs; [
 
       # Launch programs and supervisord, available as "supervisord" in PATH
       supervisordProject.supervisord-wrapper
@@ -42,6 +42,9 @@ rec {
 
       # Tool to view logs, launch with `lnav <log-folder>`
       lnav
+
+      # Tool to verify emitted shell scripts
+      shellcheck
     ];
 
     # Get environment variables of the supervisordProject

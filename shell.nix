@@ -4,9 +4,8 @@
 }:
 
 pkgs.mkShellNoCC {
-  buildInputs = with pkgs; [
+  packages = with pkgs; [
     npins
-    lnav
     nixfmt-tree
   ];
 }
