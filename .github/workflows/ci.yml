@@ -34,11 +34,17 @@ jobs:
         run: |
           nix-shell ./example --run "
           set -ex
+          env | grep -e '^SUPERVISORD_PROJECT'
+          env | grep -e '^SUPERVISORD_ROOT'
+          env | grep -e '^SUPERVISORD_RUN'
+          env | grep -e '^SUPERVISORD_DATA'
+          env | grep -e '^SUPERVISORD_LOG'
           supervisord
           sleep 5
           supervisorctl status
           curl -s http://supervisord.localhost:8080 | grep -q "Mailpit"
           supervisord-kill
+          set +x
           "
 
   create-npins-example:
@@ -91,14 +97,21 @@ jobs:
               supervisordProject.supervisorctl-wrapper
               supervisordProject.supervisord-kill
             ];
+            shellHook = supervisordProject.shellHook;
           }
           EOF
       - name: Run example
         run: |
           nix-shell ./npins-example --run "
           set -ex
+          env | grep -e '^SUPERVISORD_PROJECT'
+          env | grep -e '^SUPERVISORD_ROOT'
+          env | grep -e '^SUPERVISORD_RUN'
+          env | grep -e '^SUPERVISORD_DATA'
+          env | grep -e '^SUPERVISORD_LOG'
           supervisord
           sleep 5
           supervisorctl status
           supervisord-kill
+          set +x
           "

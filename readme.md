@@ -76,6 +76,7 @@ pkgs.mkShellNoCC {
     supervisordProject.supervisorctl-wrapper
     supervisordProject.supervisord-kill
   ];
+  shellHook = supervisordProject.shellHook;
 }
 ```
 

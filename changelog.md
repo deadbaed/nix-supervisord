@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expose path of project in `mkPaths` as `paths.path.project` or via the environment variable `SUPERVISORD_PROJECT`.
 - Declared programs can run additional commands with `pre_commands` before the final `command` will be executed, as `command` must only take one single command.
+- Expose `SUPERVISORD_*` varibles in `mkSupervisor` as `shellHook`.
+- Expose raw names of supervisord folders in `mkPaths` as `paths.name.*` (used internally, but still exposed).
 
 ### Changed
 
