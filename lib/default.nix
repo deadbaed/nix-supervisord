@@ -56,7 +56,7 @@ let
         ${package}/bin/supervisord -c ${config.configFile}
       '';
       supervisorctl-wrapper = pkgs.writeShellScriptBin "supervisorctl" ''
-        ${package}/bin/supervisorctl -c ${config.configFile} $@
+        ${package}/bin/supervisorctl -c ${config.configFile} "$@"
       '';
       supervisord-kill = pkgs.writeShellScriptBin "supervisord-kill" ''
         kill -s TERM $(cat ${config.supervisord_process})
