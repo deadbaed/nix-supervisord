@@ -59,7 +59,7 @@ let
         ${package}/bin/supervisorctl -c ${config.configFile} "$@"
       '';
       supervisord-kill = pkgs.writeShellScriptBin "supervisord-kill" ''
-        kill -s TERM $(cat ${config.supervisord_process})
+        kill -s TERM "$(cat ${config.supervisord_process})"
       '';
     in
     {
