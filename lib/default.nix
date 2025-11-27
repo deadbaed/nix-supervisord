@@ -32,11 +32,17 @@ let
 
       # Expose env variables for programs
       shellHook = ''
-        export ${paths.env.project}=$(realpath ${paths.path.project})
-        export ${paths.env.root}=$(realpath ${paths.path.root})
-        export ${paths.env.run}=$(realpath ${paths.path.root})/${paths.name.run}
-        export ${paths.env.data}=$(realpath ${paths.path.root})/${paths.name.data}
-        export ${paths.env.log}=$(realpath ${paths.path.root})/${paths.name.log}
+        ${paths.env.project}=$(realpath ${paths.path.project})
+        ${paths.env.root}=$(realpath ${paths.path.root})
+        ${paths.env.run}=$(realpath ${paths.path.root})/${paths.name.run}
+        ${paths.env.data}=$(realpath ${paths.path.root})/${paths.name.data}
+        ${paths.env.log}=$(realpath ${paths.path.root})/${paths.name.log}
+
+        export ${paths.env.project}
+        export ${paths.env.root}
+        export ${paths.env.run}
+        export ${paths.env.data}
+        export ${paths.env.log}
       '';
 
       supervisord-wrapper = pkgs.writeShellScriptBin "supervisord" ''
@@ -50,10 +56,10 @@ let
         ${package}/bin/supervisord -c ${config.configFile}
       '';
       supervisorctl-wrapper = pkgs.writeShellScriptBin "supervisorctl" ''
-        ${package}/bin/supervisorctl -c ${config.configFile} $@
+        ${package}/bin/supervisorctl -c ${config.configFile} "$@"
       '';
       supervisord-kill = pkgs.writeShellScriptBin "supervisord-kill" ''
-        kill -s TERM $(cat ${config.supervisord_process})
+        kill -s TERM "$(cat ${config.supervisord_process})"
       '';
     in
     {
