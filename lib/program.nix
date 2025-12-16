@@ -5,8 +5,7 @@
 }:
 
 let
-  # TODO: find a way to simplify this naming scheme
-  commandName = project: program: "supervisord-${project}-${program}";
+  formatSupervisordCommand = project: program: "supervisord-${project}-${program}";
 
   # TODO: find a better way to handle types
   programType =
@@ -36,7 +35,7 @@ let
       command,
       pre_commands,
     }:
-    pkgs.writeShellScriptBin (commandName project_name name) ''
+    pkgs.writeShellScriptBin (formatSupervisordCommand project_name name) ''
       set -e
       mkdir -p ${paths.path.data}/${name} ${paths.path.run}/${name}
       ${pkgs.lib.concatStringsSep "\n" pre_commands}
@@ -62,7 +61,7 @@ let
       envLine = pkgs.lib.optionalString (
         environment != { }
       ) "environment = ${formatEnvironment environment}";
-      program = commandName project_name name;
+      program = formatSupervisordCommand project_name name;
     in
     pkgs.writeTextFile {
       name = "${program}.conf";
