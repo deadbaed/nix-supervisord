@@ -7,5 +7,7 @@ pkgs.mkShellNoCC {
   packages = with pkgs; [
     npins
     nixfmt-tree
+    nil
+    nixfmt-rfc-style
   ];
 }
