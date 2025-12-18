@@ -5,28 +5,9 @@
 }:
 
 let
-  formatSupervisordCommand = project: program: "supervisord-${project}-${program}";
+  inherit (pkgs.lib) types throwIfNot;
 
-  # TODO: find a better way to handle types
-  programType =
-    {
-      name,
-      command,
-      pre_commands,
-      environment,
-    }:
-    assert builtins.typeOf name == "string";
-    assert builtins.typeOf command == "string";
-    assert builtins.typeOf pre_commands == "list";
-    assert builtins.typeOf environment == "set";
-    {
-      inherit
-        name
-        command
-        pre_commands
-        environment
-        ;
-    };
+  formatSupervisordCommand = project: program: "supervisord-${project}-${program}";
 
   # Create data folder, run commands before launching final program
   wrapCommand =
@@ -72,23 +53,27 @@ let
       '';
     };
 
-  # TODO: simplify the way arguments are validated
   mkSupervisordProgram =
     config:
     let
-      # Validate the input against programType
-      validated = programType {
-        name = config.name;
-        command = config.command;
-        pre_commands = config.pre_commands or [ ];
-        environment = config.environment or { };
-      };
+      name = config.name;
+      command = config.command;
+      pre_commands = config.pre_commands or [ ];
+      environment = config.environment or { };
+
+      # Validate types
+      validName = throwIfNot (types.str.check name) "mkSupervisordProgram: 'name' must be a string, got: ${builtins.typeOf name}";
+      validCommand = throwIfNot (types.str.check command) "mkSupervisordProgram: 'command' must be a string, got: ${builtins.typeOf command}";
+      validPreCommands = throwIfNot ((types.listOf types.str).check pre_commands) "mkSupervisordProgram: 'pre_commands' must be a list of strings, got: ${builtins.typeOf pre_commands}";
+      validEnvironment = throwIfNot ((types.attrsOf types.str).check environment) "mkSupervisordProgram: 'environment' must be an attribute set of strings, got: ${builtins.typeOf environment}";
     in
-    mkProgramConfig {
-      name = validated.name;
-      command = validated.command;
-      pre_commands = validated.pre_commands;
-      environment = validated.environment;
+    validName validCommand validPreCommands validEnvironment mkProgramConfig {
+      inherit
+        name
+        command
+        pre_commands
+        environment
+        ;
     };
 in
 mkSupervisordProgram
