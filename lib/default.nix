@@ -46,6 +46,8 @@ let
       '';
 
       supervisord-wrapper = pkgs.writeShellScriptBin "supervisord" ''
+        command pushd $SUPERVISORD_PROJECT > /dev/null
+
         # Make sure required folders exist
         mkdir -p ${paths.path.run} ${paths.path.data} ${paths.path.log}
 
@@ -54,12 +56,22 @@ let
 
         # Start supervisord
         ${package}/bin/supervisord -c ${config.configFile}
+
+        command popd > /dev/null
       '';
       supervisorctl-wrapper = pkgs.writeShellScriptBin "supervisorctl" ''
+        command pushd $SUPERVISORD_PROJECT > /dev/null
+
         ${package}/bin/supervisorctl -c ${config.configFile} "$@"
+
+        command popd > /dev/null
       '';
       supervisord-kill = pkgs.writeShellScriptBin "supervisord-kill" ''
+        command pushd $SUPERVISORD_PROJECT > /dev/null
+
         kill -s TERM "$(cat ${config.supervisord_process})"
+
+        command popd > /dev/null
       '';
     in
     {
