@@ -13,6 +13,9 @@ let
   mkSupervisordProgram =
     { project_name, paths }: import ./program.nix { inherit pkgs project_name paths; };
 
+  pushd = ''command pushd "$SUPERVISORD_PROJECT" > /dev/null || { echo "Failure to pushd into SUPERVISORD_PROJECT"; exit 1; }'';
+  popd = ''command popd > /dev/null || { echo "Failure to popd"; exit 1; }'';
+
   mkSupervisor =
     {
       project_name,
@@ -46,6 +49,8 @@ let
       '';
 
       supervisord-wrapper = pkgs.writeShellScriptBin "supervisord" ''
+        ${pushd}
+
         # Make sure required folders exist
         mkdir -p ${paths.path.run} ${paths.path.data} ${paths.path.log}
 
@@ -54,12 +59,22 @@ let
 
         # Start supervisord
         ${package}/bin/supervisord -c ${config.configFile}
+
+        ${popd}
       '';
       supervisorctl-wrapper = pkgs.writeShellScriptBin "supervisorctl" ''
+        ${pushd}
+
         ${package}/bin/supervisorctl -c ${config.configFile} "$@"
+
+        ${popd}
       '';
       supervisord-kill = pkgs.writeShellScriptBin "supervisord-kill" ''
+        ${pushd}
+
         kill -s TERM "$(cat ${config.supervisord_process})"
+
+        ${popd}
       '';
     in
     {
