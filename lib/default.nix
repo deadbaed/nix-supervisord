@@ -13,7 +13,7 @@ let
   mkSupervisordProgram =
     { project_name, paths }: import ./program.nix { inherit pkgs project_name paths; };
 
-  pushd = ''command pushd $SUPERVISORD_PROJECT > /dev/null || { echo "Failure to pushd into SUPERVISORD_PROJECT"; exit 1; }'';
+  pushd = ''command pushd "$SUPERVISORD_PROJECT" > /dev/null || { echo "Failure to pushd into SUPERVISORD_PROJECT"; exit 1; }'';
   popd = ''command popd > /dev/null || { echo "Failure to popd"; exit 1; }'';
 
   mkSupervisor =
