@@ -67,13 +67,17 @@ let
       validPreCommands = throwIfNot ((types.listOf types.str).check pre_commands) "mkSupervisordProgram: 'pre_commands' must be a list of strings, got: ${builtins.typeOf pre_commands}";
       validEnvironment = throwIfNot ((types.attrsOf types.str).check environment) "mkSupervisordProgram: 'environment' must be an attribute set of strings, got: ${builtins.typeOf environment}";
     in
-    validName validCommand validPreCommands validEnvironment mkProgramConfig {
-      inherit
-        name
-        command
-        pre_commands
-        environment
-        ;
-    };
+    # Run the throwIfNot functions first
+    validName validCommand validPreCommands validEnvironment
+      # Generate configuration file
+      mkProgramConfig
+      {
+        inherit
+          name
+          command
+          pre_commands
+          environment
+          ;
+      };
 in
 mkSupervisordProgram

@@ -84,7 +84,7 @@ Run `nix-shell .` to enter inside your newly created supervisord environement. [
 
 You can:
 - Launch the supervised processes with `supervisord`
-- Manage everything  with `supervisorctl`
+- Manage everything with `supervisorctl`
 - Kill supervisord with `supervisord-kill`
 
 Files will be stored in `.supervisor`:
