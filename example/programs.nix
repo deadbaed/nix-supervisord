@@ -42,4 +42,11 @@ in
     in
     config
   )
+
+  # Oneshot commands are also possible!
+  {
+    name = "oneshot";
+    command = ''echo "hello I am a oneshot command!"'';
+    start_secs = 0; # This command will immediately exit, otherwise supervisord will attempt to restart it
+  }
 ]

@@ -34,6 +34,7 @@ let
       command,
       pre_commands,
       environment,
+      start_secs,
     }:
     let
       wrappedCommand = wrapCommand {
@@ -49,6 +50,7 @@ let
       text = ''
         [program:${name}]
         command = ${wrappedCommand}/bin/${program}
+        startsecs = ${builtins.toString start_secs}
         ${envLine}
       '';
     };
@@ -60,15 +62,17 @@ let
       command = config.command;
       pre_commands = config.pre_commands or [ ];
       environment = config.environment or { };
+      start_secs = config.start_secs or 1;
 
       # Validate types
       validName = throwIfNot (types.str.check name) "mkSupervisordProgram: 'name' must be a string, got: ${builtins.typeOf name}";
       validCommand = throwIfNot (types.str.check command) "mkSupervisordProgram: 'command' must be a string, got: ${builtins.typeOf command}";
       validPreCommands = throwIfNot ((types.listOf types.str).check pre_commands) "mkSupervisordProgram: 'pre_commands' must be a list of strings, got: ${builtins.typeOf pre_commands}";
       validEnvironment = throwIfNot ((types.attrsOf types.str).check environment) "mkSupervisordProgram: 'environment' must be an attribute set of strings, got: ${builtins.typeOf environment}";
+      validStartSecs = throwIfNot (types.int.check start_secs) "mkSupervisordProgram: 'start_secs' must be a number, got: ${builtins.typeOf start_secs}";
     in
     # Run the throwIfNot functions first
-    validName validCommand validPreCommands validEnvironment
+    validName validCommand validPreCommands validEnvironment validStartSecs
       # Generate configuration file
       mkProgramConfig
       {
@@ -77,6 +81,7 @@ let
           command
           pre_commands
           environment
+          start_secs
           ;
       };
 in

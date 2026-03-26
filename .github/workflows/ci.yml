@@ -94,6 +94,13 @@ jobs:
                 in
                 config
               )
+
+              # Oneshot command
+              {
+                name = "oneshot";
+                command = ''echo "hello I am a oneshot command!"'';
+                start_secs = 0;
+              }
             ];
             supervisordProject = supervisord.mkSupervisor { inherit project_name paths programs; };
           in
