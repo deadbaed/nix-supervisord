@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
 
+## 0.4.0 - 2026-03-26
+
 ### Added
 
 - Declared programs can define the time they take to consider the start successful with `start_secs`. It defines the `startsecs` option in `supervisord`. Value can be set to `0` to define oneshot programs, which will exit right after their execution.
